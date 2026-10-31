@@ -26,7 +26,7 @@ app.get("/api/health", (req, res) => {
 app.get("/api/about", (req, res) => {
   res.json({
     name: "Bookify",
-    description: "An appointement booking platform",
+    description: "An appointment booking platform",
   });
 });
 
