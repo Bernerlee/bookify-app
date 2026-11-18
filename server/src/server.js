@@ -5,6 +5,7 @@ import cors from "cors";
 
 import customerRoutes from "./routes/customerRoutes.js";
 import serviceRoutes from "./routes/serviceRoutes.js";
+import staffRoutes from "./routes/staffRoutes.js";
 import appointmentRoutes from "./routes/appointmentRoutes.js";
 import errorHandler from "./middleware/errorHandler.js";
 
@@ -40,8 +41,11 @@ app.use("/api/customers", customerRoutes);
 // Service(haircut, shaving) routes
 app.use("/api/services", serviceRoutes);
 
-// Appointment route
+// Appointment routes
 app.use("/api/appointments", appointmentRoutes);
+
+// Staff routes
+app.use("/api/staff", staffRoutes);
 
 app.get("/api/db-check", async (req, res, next) => {
   try {
