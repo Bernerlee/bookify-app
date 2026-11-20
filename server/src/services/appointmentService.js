@@ -1,54 +1,85 @@
-const appointments = [];
+import prisma from "../lib/prisma.js";
 
-// CREATE
-export const createAppointmentService = (appointmentData) => {
-  const newAppointment = {
-    id: Date.now(),
-    ...appointmentData,
-    status: "pending",
-  };
-
-  appointments.push(newAppointment);
-
-  return newAppointment;
-};
-
-// READ ALL
-export const getAppointmentsService = () => {
-  return appointments;
-};
-
-// READ ONE
-export const getAppointmentByIdService = (id) => {
-  return appointments.find((appointment) => appointment.id === Number(id));
-};
-
-// UPDATE
-export const updateAppointmentService = (id, updateData) => {
-  const appointment = appointments.find(
-    (appointment) => appointment.id === Number(id),
-  );
-
-  if (!appointment) {
-    return null;
-  }
-
-  Object.assign(appointment, updateData);
+// Create an appointment
+export const createAppointment = async (appointmentData) => {
+  const appointment = await prisma.appointment.create({
+    data: appointmentData,
+    include: {
+      customer: true,
+      service: true,
+      staff: true,
+    },
+  });
 
   return appointment;
 };
 
-// DELETE
-export const deleteAppointmentService = (id) => {
-  const appointmentIndex = appointments.findIndex(
-    (appointment) => appointment.id === Number(id),
-  );
+// Get all appointments
+export const getAllAppointments = async () => {
+  const appointments = await prisma.appointment.findMany({
+    include: {
+      customer: true,
+      service: true,
+      staff: true,
+    },
+    orderBy: {
+      appointmentDate: "asc",
+    },
+  });
 
-  if (appointmentIndex === -1) {
+  return appointments;
+};
+
+// Get an appointment by ID
+export const getAppointmentById = async (id) => {
+  const appointment = await prisma.appointment.findUnique({
+    where: { id },
+    include: {
+      customer: true,
+      service: true,
+      staff: true,
+    },
+  });
+
+  return appointment;
+};
+
+// Update an appointment
+export const updateAppointment = async (id, appointmentData) => {
+  const existingAppointment = await prisma.appointment.findUnique({
+    where: { id },
+  });
+
+  if (!existingAppointment) {
     return null;
   }
 
-  const deleteAppointment = appointments.splice(appointmentIndex, 1);
+  const updatedAppointment = await prisma.appointment.update({
+    where: { id },
+    data: appointmentData,
+    include: {
+      customer: true,
+      service: true,
+      staff: true,
+    },
+  });
 
-  return deleteAppointment[0];
+  return updatedAppointment;
+};
+
+// Delete an appointment
+export const deleteAppointment = async (id) => {
+  const existingAppointment = await prisma.appointment.findUnique({
+    where: { id },
+  });
+
+  if (!existingAppointment) {
+    return null;
+  }
+
+  const deletedAppointment = await prisma.appointment.delete({
+    where: { id },
+  });
+
+  return deletedAppointment;
 };
