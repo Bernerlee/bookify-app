@@ -7,6 +7,7 @@ import customerRoutes from "./routes/customerRoutes.js";
 import serviceRoutes from "./routes/serviceRoutes.js";
 import staffRoutes from "./routes/staffRoutes.js";
 import appointmentRoutes from "./routes/appointmentRoutes.js";
+import authRoutes from "./routes/authRoutes.js";
 import errorHandler from "./middleware/errorHandler.js";
 
 const app = express();
@@ -46,6 +47,9 @@ app.use("/api/appointments", appointmentRoutes);
 
 // Staff routes
 app.use("/api/staff", staffRoutes);
+
+// Register route
+app.use("/api/auth", authRoutes);
 
 app.get("/api/db-check", async (req, res, next) => {
   try {
